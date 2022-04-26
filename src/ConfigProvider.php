@@ -8,9 +8,11 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            \LHyperfTools\Command\Generator\RepositoryCommand::class,
-            \LHyperfTools\Command\Generator\ServiceCommand::class,
-            \LHyperfTools\Command\Generator\SearchCommand::class
+            "commands" => [
+                \LHyperfTools\Command\Generator\RepositoryCommand::class,
+                \LHyperfTools\Command\Generator\ServiceCommand::class,
+                \LHyperfTools\Command\Generator\SearchCommand::class
+            ]
         ];
     }
 }
