@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+use LHyperfTools\Search\SearchAbstract;
+
+class %CLASS% extends SearchAbstract
+{
+    public function relationship(): array
+    {
+        return [];
+    }
+}

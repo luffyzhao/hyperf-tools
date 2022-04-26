@@ -1,0 +1,21 @@
+{
+    "name": "luffyzhao/hyperf-tools",
+    "autoload": {
+        "psr-4": {
+            "LHyperfTools\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "luffyzhao",
+            "email": "luffyzhao@vip.126.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "hyperf/command": ">=2",
+        "hyperf/http-server": ">=2",
+        "hyperf/db-connection": "^2.2",
+        "hyperf/devtool": "^2.2"
+    }
+}
