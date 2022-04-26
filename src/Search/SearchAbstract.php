@@ -8,6 +8,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\Utils\Contracts\Arrayable;
 use Hyperf\Utils\Str;
 use LHyperfTools\Contracts\SearchInterface;
+use Hyperf\Di\Annotation\Inject;
 
 abstract class SearchAbstract implements SearchInterface, Arrayable
 {
