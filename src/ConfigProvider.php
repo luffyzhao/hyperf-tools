@@ -11,7 +11,8 @@ class ConfigProvider
             "commands" => [
                 \LHyperfTools\Command\Generator\RepositoryCommand::class,
                 \LHyperfTools\Command\Generator\ServiceCommand::class,
-                \LHyperfTools\Command\Generator\SearchCommand::class
+                \LHyperfTools\Command\Generator\SearchCommand::class,
+                \LHyperfTools\Command\MakeRepositoryCommand::class
             ]
         ];
     }
