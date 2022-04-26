@@ -1,7 +1,7 @@
 <?php
 namespace LHyperfTools\Services;
 
-use Hyperf\Contract\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 abstract class ServiceAbstract
 {
