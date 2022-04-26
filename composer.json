@@ -27,9 +27,5 @@
         }
     },
     "bin": [
-    ],
-    "scripts": {
-        "cs-fix": "php-cs-fixer fix $1",
-        "test": "phpunit --colors=always"
-    }
+    ]
 }
