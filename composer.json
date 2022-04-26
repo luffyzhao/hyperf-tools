@@ -18,9 +18,12 @@
         "hyperf/db-connection": "^2.2",
         "hyperf/devtool": "^2.2"
     },
+    "config": {
+        "sort-packages": true
+    },
     "extra": {
         "hyperf": {
-            "config": "LHyperfTools\\Provider"
+            "config": "LHyperfTools\\ConfigProvider"
         }
     },
     "bin": [

@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace LHyperfTools;
 
-class Provider
+class ConfigProvider
 {
     public function __invoke(): array
     {
