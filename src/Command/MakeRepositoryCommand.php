@@ -36,7 +36,7 @@ class MakeRepositoryCommand extends Command
      */
     protected function makeServiceQuestion(): bool
     {
-        $question = new Question('测试对错', 'yes/no');
+        $question = new Question('是否对应生成Service?', 'yes/no');
         $a = $this->output->askQuestion($question);
         if (!in_array($a, ['yes', 'no'])) {
             $this->output->warning('请输入 yes 或者 no !!');
