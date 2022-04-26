@@ -17,5 +17,16 @@
         "hyperf/http-server": ">=2",
         "hyperf/db-connection": "^2.2",
         "hyperf/devtool": "^2.2"
+    },
+    "extra": {
+        "hyperf": {
+            "config": "LHyperfTools\\Provider"
+        }
+    },
+    "bin": [
+    ],
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "test": "phpunit --colors=always"
     }
 }
