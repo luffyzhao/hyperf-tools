@@ -22,7 +22,7 @@ class ServiceCommand extends GeneratorCommand
     {
         return 'App\\Services';
     }
-    
+
     /**
      * @return string
      */
