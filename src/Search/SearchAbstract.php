@@ -13,7 +13,6 @@ use Hyperf\Di\Annotation\Inject;
 abstract class SearchAbstract implements SearchInterface, Arrayable
 {
     /**
-     * @Inject
      * @var RequestInterface
      */
     protected $request;
@@ -21,7 +20,7 @@ abstract class SearchAbstract implements SearchInterface, Arrayable
     /**
      * 条件.
      *
-     * @var [type]
+     * @var array
      */
     private $operators
         = [
@@ -69,7 +68,7 @@ abstract class SearchAbstract implements SearchInterface, Arrayable
     /**
      * 要解析的条件.
      *
-     * @var [type]
+     * @var array
      */
     private $parses
         = [
@@ -84,6 +83,11 @@ abstract class SearchAbstract implements SearchInterface, Arrayable
             'between',
         ];
 
+
+    public function __construct(RequestInterface $request)
+    {
+        $this->request = $request;
+    }
 
     /**
      * 关系映射.
@@ -106,8 +110,7 @@ abstract class SearchAbstract implements SearchInterface, Arrayable
         $relationship = $this->relationship();
         if (!empty($relationship)) {
             foreach ($relationship as $column => $operator) {
-                if ($this->request->has($column)) {
-                    $default = $this->request->getAttribute($column);
+                if (($default = $this->request->input($column, null)) !== null) {
                     $value = $this->getAttribute($column, $default);
 
                     if (false === $value || is_null($value) || $value === '') {
@@ -222,7 +225,7 @@ abstract class SearchAbstract implements SearchInterface, Arrayable
      * @param $default
      * @return false|mixed
      */
-    protected function getAttribute(int $key, $default)
+    protected function getAttribute($key, $default)
     {
         $method = 'get'.Str::camel($key).'Attribute';
         if (method_exists($this, $method)) {
