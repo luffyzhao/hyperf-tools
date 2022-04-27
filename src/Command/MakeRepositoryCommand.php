@@ -3,6 +3,7 @@
 namespace LHyperfTools\Command;
 
 use Hyperf\Command\Command;
+use Hyperf\Utils\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 
@@ -21,12 +22,19 @@ class MakeRepositoryCommand extends Command
         }
 
         $this->call('gen:repository', [
-            'name' => $this->input->getArgument('name')
+            'name' => $name
         ]);
 
         if($this->makeServiceQuestion()){
             $this->call('gen:service', [
-                'name' => $this->input->getArgument('name')
+                'name' => $name
+            ]);
+        }
+
+
+        if($this->makeModelQuestion()){
+            $this->call('gen:model', [
+                'name' => Str::substr($name, Str::start($name, "\\"))
             ]);
         }
     }
@@ -50,6 +58,23 @@ class MakeRepositoryCommand extends Command
     }
 
     /**
+     * @return bool
+     */
+    protected function makeModelQuestion()
+    {
+        $question = new Question('是否对应生成Model?', 'yes/no');
+        $a = $this->output->askQuestion($question);
+        if (!in_array($a, ['yes', 'no'])) {
+            $this->output->warning('请输入 yes 或者 no !!');
+            $this->makeModelQuestion();
+        }
+        if ($a === 'yes') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @return array[]
      */
     protected function getArguments()
@@ -58,4 +83,6 @@ class MakeRepositoryCommand extends Command
             ['name', InputArgument::OPTIONAL, '这里是对这个参数的解释']
         ];
     }
+
+
 }
