@@ -49,8 +49,4 @@ interface DriverInterface
      */
     public function check($string): bool;
 
-    /**
-     * @return bool
-     */
-    public function refresh():bool;
 }

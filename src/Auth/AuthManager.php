@@ -22,14 +22,13 @@ class AuthManager
     protected $drivers = [];
 
     /**
-     * @var StdoutLoggerInterface
+     * @var string
      */
-    protected $logger;
+    protected $default = null;
 
     public function __construct(ConfigInterface $config, StdoutLoggerInterface $logger)
     {
         $this->config = $config;
-        $this->logger = $logger;
     }
 
     /**
@@ -38,6 +37,10 @@ class AuthManager
      */
     public function getDriver($name = null): DriverInterface
     {
+        if(is_null($name)){
+            $name = $this->default;
+        }
+
         if (isset($this->drivers[$name]) && $this->drivers[$name] instanceof DriverInterface) {
             return $this->drivers[$name];
         }
@@ -64,12 +67,15 @@ class AuthManager
             throw new InvalidArgumentException('The driver not exists .');
         }
 
-        $driver = new $config['driver']($class, $this->config, $this->logger);
+        $driver = new $config['driver']($class);
         if (!($driver instanceof DriverInterface)) {
             throw new InvalidArgumentException('The driver not instanceof AuthInterface .');
         }
 
-        return $driver;
+        $this->drivers[$name] = $driver;
+        $this->default = $name;
+
+        return $this->drivers[$name];
 
     }
 }

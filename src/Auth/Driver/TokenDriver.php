@@ -52,6 +52,7 @@ class TokenDriver extends Driver
         ]);
     }
 
+
     /**
      * @param $string
      * @return bool
