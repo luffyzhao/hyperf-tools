@@ -34,7 +34,7 @@ class MakeRepositoryCommand extends Command
 
         if($this->makeModelQuestion()){
             $this->call('gen:model', [
-                'name' => Str::substr($name, Str::start($name, "\\"))
+                'name' => Str::substr($name, strrpos($name, "\\") + 1)
             ]);
         }
     }
