@@ -22,4 +22,11 @@ class SearchCommand extends GeneratorCommand
     {
         return 'App\Search';
     }
+
+    /**
+     * @return string
+     */
+    protected function getNameInput(){
+        return trim($this->input->getArgument('name')) . "Search";
+    }
 }
