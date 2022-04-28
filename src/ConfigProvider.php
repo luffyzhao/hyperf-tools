@@ -13,7 +13,14 @@ class ConfigProvider
                 \LHyperfTools\Command\Generator\ServiceCommand::class,
                 \LHyperfTools\Command\Generator\SearchCommand::class,
                 \LHyperfTools\Command\MakeRepositoryCommand::class
-            ]
+            ],
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'description' => 'The config for auth.',
+                    'source' => __DIR__ . '/../publish/l-auth.php'
+                ],
+            ],
         ];
     }
 }
