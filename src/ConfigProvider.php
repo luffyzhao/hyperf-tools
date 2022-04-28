@@ -18,7 +18,8 @@ class ConfigProvider
                 [
                     'id' => 'config',
                     'description' => 'The config for auth.',
-                    'source' => __DIR__ . '/../publish/l-auth.php'
+                    'source' => __DIR__ . '/../publish/auth.php',
+                    'destination' => BASE_PATH . '/config/autoload/l-auth.php',
                 ],
             ],
         ];
