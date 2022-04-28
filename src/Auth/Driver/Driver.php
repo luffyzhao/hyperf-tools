@@ -12,20 +12,16 @@ use LHyperfTools\Exception\AuthException;
 
 abstract class Driver implements DriverInterface
 {
-    protected ?AuthInterface $auth;
-    protected ConfigInterface $config;
-    protected StdoutLoggerInterface $logger;
+    protected  $auth;
 
     /**
      * @param AuthInterface $auth
      * @param ConfigInterface $config
      * @param StdoutLoggerInterface $logger
      */
-    public function __construct(AuthInterface $auth, ConfigInterface $config, StdoutLoggerInterface $logger)
+    public function __construct(AuthInterface $auth)
     {
         $this->auth = $auth;
-        $this->config = $config;
-        $this->logger = $logger;
     }
 
 

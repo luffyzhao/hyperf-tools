@@ -9,10 +9,8 @@ interface DriverInterface
 {
     /**
      * @param AuthInterface $auth
-     * @param ConfigInterface $config
-     * @param StdoutLoggerInterface $logger
      */
-    public function __construct(AuthInterface $auth, ConfigInterface $config, StdoutLoggerInterface $logger);
+    public function __construct(AuthInterface $auth);
 
     /**
      * 登录
@@ -50,4 +48,9 @@ interface DriverInterface
      * @return bool
      */
     public function check($string): bool;
+
+    /**
+     * @return bool
+     */
+    public function refresh():bool;
 }

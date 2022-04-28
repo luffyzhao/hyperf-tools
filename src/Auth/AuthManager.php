@@ -42,9 +42,9 @@ class AuthManager
             return $this->drivers[$name];
         }
         if (is_null($name)) {
-            $name = $this->config->get("cache.default");
+            $name = $this->config->get("l-auth.default");
         }
-        $config = $this->config->get("cache.modules.{$name}");
+        $config = $this->config->get("l-auth.modules.{$name}");
 
         if (empty($config)) {
             throw new InvalidArgumentException(sprintf('The cache config %s is invalid.', $name));
@@ -64,7 +64,7 @@ class AuthManager
             throw new InvalidArgumentException('The driver not exists .');
         }
 
-        $driver = new $config['driver']();
+        $driver = new $config['driver']($class, $this->config, $this->logger);
         if (!($driver instanceof DriverInterface)) {
             throw new InvalidArgumentException('The driver not instanceof AuthInterface .');
         }

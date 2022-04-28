@@ -6,32 +6,28 @@ namespace LHyperfTools\Auth\Driver;
 use Hyperf\Cache\Cache;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Di\Container;
 use JsonSerializable;
 use LHyperfTools\Auth\Contracts\AuthInterface;
 use LHyperfTools\Auth\Contracts\DriverInterface;
+use Phper666\JWTAuth\BlackList;
 use Phper666\JWTAuth\JWT;
 use Hyperf\Di\Annotation\Inject;
 use Psr\Container\ContainerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Hyperf\Utils\ApplicationContext;
 
 class TokenDriver extends Driver
 {
-
     /**
-     * @Inject
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @Inject
      * @var JWT
      */
     protected $jwt;
 
-    public function __construct(AuthInterface $auth, ConfigInterface $config, StdoutLoggerInterface $logger)
+    public function __construct(AuthInterface $auth)
     {
-        parent::__construct($auth, $config, $logger);
+        parent::__construct($auth);
+        $this->jwt = new JWT(ApplicationContext::getContainer()->get(ContainerInterface::class), new BlackList(ApplicationContext::getContainer()->get(ContainerInterface::class)));
     }
 
     /**
