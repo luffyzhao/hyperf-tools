@@ -9,7 +9,7 @@ abstract class ServiceAbstract
     /**
      * @return static
      */
-    #[Pure] public static function service(): static
+    public static function service(): static
     {
         return new static();
     }
