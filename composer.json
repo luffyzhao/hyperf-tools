@@ -3,7 +3,10 @@
     "autoload": {
         "psr-4": {
             "LHyperfTools\\": "src/"
-        }
+        },
+        "files": [
+            "src\\Function.php"
+        ]
     },
     "authors": [
         {
@@ -13,8 +16,12 @@
     ],
     "require": {
         "php": ">=7.3",
+        "hyperf-ext/auth": "^2.2",
+        "hyperf-ext/hashing": "^2.2",
+        "hyperf-ext/jwt": "^2.2",
         "hyperf/cache": "^2.2",
         "hyperf/command": ">=2",
+        "hyperf/constants": "^2.2",
         "hyperf/db-connection": "^2.2",
         "hyperf/devtool": "^2.2",
         "hyperf/http-server": ">=2"
