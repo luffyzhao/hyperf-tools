@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Hyperf\Di\Annotation\Inject;
 
 class RefreshTokenMiddleware implements MiddlewareInterface
 {
@@ -30,14 +31,14 @@ class RefreshTokenMiddleware implements MiddlewareInterface
     private $manager;
 
     /**
-     * @Inject
      * @var JwtFactory
      */
     private $jwtFactory;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, JwtFactory $jwtFactory)
     {
         $this->container = $container;
+        $this->jwtFactory = $jwtFactory;
     }
 
     /**

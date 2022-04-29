@@ -10,6 +10,7 @@ use Hyperf\Utils\Contracts\Jsonable;
 use LHyperfTools\Constants\HttpCode;
 use Psr\Http\Message\ResponseInterface;
 
+
 trait ApiResponseTrait
 {
     private int $httpCode = HttpCode::OK;
