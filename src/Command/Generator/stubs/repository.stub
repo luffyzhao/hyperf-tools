@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 use LHyperfTools\Repositories\RepositoryAbstract;
+use Hyperf\Di\Annotation\Inject;
 
 class %CLASS% extends RepositoryAbstract
 {

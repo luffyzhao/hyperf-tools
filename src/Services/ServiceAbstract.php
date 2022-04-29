@@ -1,14 +1,16 @@
 <?php
 namespace LHyperfTools\Services;
 
-use Psr\Container\ContainerInterface;
-use Hyperf\Di\Annotation\Inject;
+
+use JetBrains\PhpStorm\Pure;
 
 abstract class ServiceAbstract
 {
     /**
-     * @Inject
-     * @var ContainerInterface
+     * @return static
      */
-    protected $container;
+    #[Pure] public static function service(): static
+    {
+        return new static();
+    }
 }
