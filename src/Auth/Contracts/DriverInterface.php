@@ -8,14 +8,8 @@ use Hyperf\Contract\StdoutLoggerInterface;
 interface DriverInterface
 {
     /**
-     * @param AuthInterface $auth
-     */
-    public function __construct(AuthInterface $auth);
-
-    /**
      * 登录
      * @param array $data
-     * @return mixed
      */
     public function login(array $data);
 
@@ -27,13 +21,13 @@ interface DriverInterface
 
     /**
      * @param AuthInterface $auth
-     * @return self
+     * @return DriverInterface
      */
     public function loginForUser(AuthInterface $auth): self;
 
     /**
      * @param $id
-     * @return AuthInterface
+     * @return DriverInterface
      */
     public function loginForUserId($id): self;
 
@@ -44,9 +38,8 @@ interface DriverInterface
     public function isLogin(): bool;
 
     /**
-     * @param $string
      * @return bool
      */
-    public function check($string): bool;
+    public function check(): bool;
 
 }

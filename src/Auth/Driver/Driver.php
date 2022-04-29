@@ -12,25 +12,16 @@ use LHyperfTools\Exception\AuthException;
 
 abstract class Driver implements DriverInterface
 {
-    protected  $auth;
-
     /**
-     * @param AuthInterface $auth
-     * @param ConfigInterface $config
-     * @param StdoutLoggerInterface $logger
+     * @var AuthInterface
      */
-    public function __construct(AuthInterface $auth)
-    {
-        $this->auth = $auth;
-    }
-
+    protected $auth;
 
     /**
      * @param array $data
-     * @return Driver
      * @throws AuthException
      */
-    public function login(array $data): DriverInterface
+    public function login(array $data)
     {
         // 剔除password
         $password = $data[$this->auth->getPasswordField()];
@@ -54,7 +45,6 @@ abstract class Driver implements DriverInterface
 
             $this->loginForUser($user);
 
-            return $this;
         } else {
             throw new AuthException('The modules not instanceof Model .');
         }
@@ -70,15 +60,11 @@ abstract class Driver implements DriverInterface
     }
 
     /**
-     * @param AuthInterface|null $auth
+     * @param AuthInterface $auth
      * @return DriverInterface
-     * @throws AuthException
      */
-    public function loginForUser(?AuthInterface $auth): DriverInterface
+    public function loginForUser(AuthInterface $auth): DriverInterface
     {
-        if(is_null($auth)){
-            throw new AuthException('auth is null');
-        }
         $this->auth = $auth;
         return $this;
     }
