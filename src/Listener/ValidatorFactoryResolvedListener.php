@@ -51,7 +51,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
             if(!$this->request->has('key')){
                 return false;
             }
-            return $this->cache->get($this->request->input('key')) === $value;
+            return strtolower($this->cache->get($this->request->input('key'))) === strtolower($value);
         });
         // 当创建一个自定义验证规则时，你可能有时候需要为错误信息定义自定义占位符这里扩展了 :foo 占位符
         $validatorFactory->replacer('captcha', function ($message, $attribute, $rule, $parameters) {
