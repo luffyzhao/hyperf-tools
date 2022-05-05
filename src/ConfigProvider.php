@@ -37,7 +37,7 @@ class ConfigProvider
                 ], [
                     'id' => 'config',
                     'description' => 'The config for hashing.',
-                    'source' => __DIR__ . '/publish/captcha.php',
+                    'source' => __DIR__ . '/../publish/captcha.php',
                     'destination' => BASE_PATH . '/config/autoload/captcha.php',
                 ],
             ],
