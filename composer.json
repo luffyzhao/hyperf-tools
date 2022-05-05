@@ -16,6 +16,7 @@
     ],
     "require": {
         "php": ">=7.3",
+        "gregwar/captcha": "^1.1",
         "hyperf-ext/auth": "^2.2",
         "hyperf-ext/hashing": "^2.2",
         "hyperf-ext/jwt": "^2.2",
@@ -24,7 +25,8 @@
         "hyperf/constants": "^2.2",
         "hyperf/db-connection": "^2.2",
         "hyperf/devtool": "^2.2",
-        "hyperf/http-server": ">=2"
+        "hyperf/http-server": ">=2",
+        "ramsey/uuid": "^4.3"
     },
     "config": {
         "sort-packages": true
