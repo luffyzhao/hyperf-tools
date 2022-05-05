@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace LHyperfTools;
 
+use LHyperfTools\Listener\ValidatorFactoryResolvedListener;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -33,6 +35,9 @@ class ConfigProvider
                     'source' => __DIR__ . '/../vendor/hyperf-ext/hashing/publish/hashing.php',
                     'destination' => BASE_PATH . '/config/autoload/hashing.php',
                 ],
+            ],
+            'listeners' => [
+                ValidatorFactoryResolvedListener::class
             ]
         ];
     }
