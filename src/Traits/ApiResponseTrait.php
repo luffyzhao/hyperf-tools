@@ -91,22 +91,22 @@ trait ApiResponseTrait
     private function respond($response): ResponseInterface
     {
         if (is_string($response)) {
-            return $this->response()->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream($response));
+            return $this->response()->withStatus($this->httpCode)->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream($response));
         }
 
         if (is_array($response) || $response instanceof Arrayable) {
-            return $this->response()
+            return $this->response()->withStatus($this->httpCode)
                 ->withAddedHeader('content-type', 'application/json')
                 ->withBody(new SwooleStream(Json::encode($response)));
         }
 
         if ($response instanceof Jsonable) {
-            return $this->response()
+            return $this->response()->withStatus($this->httpCode)
                 ->withAddedHeader('content-type', 'application/json')
                 ->withBody(new SwooleStream((string)$response));
         }
 
-        return $this->response()->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream((string)$response));
+        return $this->response()->withStatus($this->httpCode)->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream((string)$response));
     }
 
     /**
