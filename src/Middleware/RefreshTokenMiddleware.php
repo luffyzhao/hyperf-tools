@@ -78,7 +78,7 @@ class RefreshTokenMiddleware implements MiddlewareInterface
                 }
 
 
-                return $handler->handle($request)->withHeader('authorization', 'bearer ' . $new_token);
+                return $handler->handle($request)->withHeader('authorization', $new_token)->withHeader('authorization_type', 'bearer');
             } catch (Exception $exception) {
                 return $this->setHttpCode(HttpCode::UNPROCESSABLE_ENTITY)->fail($exception->getMessage());
             }
