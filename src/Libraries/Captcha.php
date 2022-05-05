@@ -28,8 +28,8 @@ class Captcha
      */
     public function json(){
         $captcha = CaptchaBuilder::create()->build($this->config->get('captcha.width'),$this->config->get('captcha.height'),$this->config->get('captcha.font'),$this->config->get('captcha.fingerprint'));
-        $key = Uuid::uuid1()->toString();
-        $this->cache->set($key, $captcha->getPhrase());
+        $key = $this->config->get('captcha.prefix') . Uuid::uuid1()->toString();
+        $this->cache->set($key, $captcha->getPhrase(), $this->config->get('captcha.ttl'));
         return [
             'key' => $key,
             'image' => $captcha->inline()

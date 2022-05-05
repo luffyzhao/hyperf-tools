@@ -2,6 +2,7 @@
 
 namespace LHyperfTools\Listener;
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Logger\LoggerFactory;
@@ -28,11 +29,17 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
      */
     protected $request;
 
-    public function __construct(CacheInterface $cache, StdoutLoggerInterface $logger, RequestInterface $request)
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
+
+    public function __construct(CacheInterface $cache, StdoutLoggerInterface $logger, RequestInterface $request, ConfigInterface $config)
     {
         $this->cache = $cache;
         $this->logger = $logger;
         $this->request = $request;
+        $this->config = $config;
     }
 
     public function listen(): array
@@ -51,7 +58,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
             if(!$this->request->has('key')){
                 return false;
             }
-            return strtolower($this->cache->get($this->request->input('key'))) === strtolower($value);
+            return strtolower($this->cache->get($this->config->get('captcha.prefix') . $this->request->input('key'))) === strtolower($value);
         });
         // 当创建一个自定义验证规则时，你可能有时候需要为错误信息定义自定义占位符这里扩展了 :foo 占位符
         $validatorFactory->replacer('captcha', function ($message, $attribute, $rule, $parameters) {
