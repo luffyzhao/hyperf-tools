@@ -34,6 +34,11 @@ class ConfigProvider
                     'description' => 'The config for hashing.',
                     'source' => __DIR__ . '/../vendor/hyperf-ext/hashing/publish/hashing.php',
                     'destination' => BASE_PATH . '/config/autoload/hashing.php',
+                ], [
+                    'id' => 'config',
+                    'description' => 'The config for hashing.',
+                    'source' => __DIR__ . '/publish/captcha.php',
+                    'destination' => BASE_PATH . '/config/autoload/captcha.php',
                 ],
             ],
             'listeners' => [
