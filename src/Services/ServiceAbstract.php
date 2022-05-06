@@ -62,7 +62,7 @@ abstract class ServiceAbstract
      * @param int|null $page
      * @return LengthAwarePaginatorInterface
      */
-    public function paginate(array $attributes, array $with, int $perPage = null, array $columns = ['*'], string $pageName = 'page', int $page = null): LengthAwarePaginatorInterface
+    public function paginate(array $attributes, array $with = [], int $perPage = null, array $columns = ['*'], string $pageName = 'page', int $page = null): LengthAwarePaginatorInterface
     {
         return $this->getNewQuery()->with($with)->where(
             $attributes
