@@ -46,7 +46,7 @@ abstract class ServiceAbstract
      * @param array $columns
      * @return Collection|array
      */
-    public function get(array $columns): Collection|array
+    public function get(array $columns = ['*']): Collection|array
     {
         return $this->getNewQuery()->get($columns);
     }
