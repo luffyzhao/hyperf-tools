@@ -30,7 +30,7 @@ trait ApiResponseTrait
      */
     public function success($data): ResponseInterface
     {
-        return $this->respond($data);
+        return $this->setHttpCode(HttpCode::OK)->respond($data);
     }
 
     /**
@@ -88,22 +88,24 @@ trait ApiResponseTrait
      * @param null|array|Arrayable|Jsonable|string $response
      * @return ResponseInterface
      */
-    private function respond($response): ResponseInterface
+    private function respond($response = null): ResponseInterface
     {
         if (is_string($response)) {
             return $this->response()->withStatus($this->httpCode)->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream($response));
         }
 
-        if (is_array($response) || $response instanceof Arrayable) {
+        if (is_array($response) || $response instanceof Arrayable || $response instanceof Jsonable) {
             return $this->response()->withStatus($this->httpCode)
                 ->withAddedHeader('content-type', 'application/json')
                 ->withBody(new SwooleStream(Json::encode($response)));
         }
 
-        if ($response instanceof Jsonable) {
+        if(is_null($response)){
             return $this->response()->withStatus($this->httpCode)
                 ->withAddedHeader('content-type', 'application/json')
-                ->withBody(new SwooleStream((string)$response));
+                ->withBody(new SwooleStream(Json::encode([
+                    'message' => '成功'
+                ])));
         }
 
         return $this->response()->withStatus($this->httpCode)->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream((string)$response));
