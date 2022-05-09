@@ -72,7 +72,7 @@ class RefreshTokenMiddleware implements MiddlewareInterface
 
                 if(!empty($payload->get('guard'))){
                     // 一次性登录，保证此次请求畅通
-                    auth($payload->get('guard') )->onceUsingId($payload->get('sub'));
+                    auth($payload->get('guard') )->loginUsingId($payload->get('sub'));
                 }else{
                     throw new Exception('刷新失败！');
                 }
