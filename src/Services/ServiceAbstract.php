@@ -8,11 +8,18 @@ use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
 use Hyperf\Database\Model\Model;
-use JetBrains\PhpStorm\Pure;
+use Hyperf\Di\Annotation\Inject;
+use Hyperf\HttpServer\Contract\RequestInterface;
 use Throwable;
 
 abstract class ServiceAbstract
 {
+    /**
+     * @Inject
+     * @var RequestInterface
+     */
+    protected RequestInterface $request;
+
     /**
      * 获取 Builder
      * @return Builder
@@ -64,6 +71,9 @@ abstract class ServiceAbstract
      */
     public function paginate(array $attributes, array $with = [], int $perPage = null, array $columns = ['*'], string $pageName = 'page', int $page = null): LengthAwarePaginatorInterface
     {
+        if($perPage === null && $this->request->has('per_page')){
+            $perPage = $this->request->input('per_page');
+        }
         return $this->getNewQuery()->with($with)->where(
             $attributes
         )->paginate($perPage, $columns, $pageName, $page);
