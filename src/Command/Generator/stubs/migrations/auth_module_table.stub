@@ -1,0 +1,124 @@
+<?php
+
+use Hyperf\Database\Schema\Schema;
+use Hyperf\Database\Schema\Blueprint;
+use Hyperf\Database\Migrations\Migration;
+use Hyperf\DbConnection\Db;
+
+class Create%MODULE%AuthModuleTable extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('manage_authorities', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 20)->comment('权限名称');
+            $table->string('method', 20)->comment('请求类型');
+            $table->string('uri', 100)->unique()->comment('权限URI');
+            $table->string('description', 255)->nullable()->comment('权限描述');
+            $table->timestamps();
+
+            $table->unique(['method', 'uri']);
+        });
+
+        Schema::create('%SMODULE%_menus', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('parent_id')->default(0)->comment('上级菜单');
+            $table->string('name', 100)->comment('菜单程度名称');
+            $table->string('title', 100)->comment('菜单标题');
+            $table->string('icon', 50)->nullable()->comment('菜单图标');
+            $table->tinyInteger('sort', false, true)->comment('排序');
+            $table->string('description', 255)->nullable()->default('')->comment('权限描述');
+            $table->timestamps();
+        });
+
+        Schema::create('%SMODULE%_menu_authority', function (Blueprint $table) {
+            $table->unsignedInteger('menu_id');
+            $table->unsignedInteger('authority_id');
+
+            $table->foreign('menu_id')->references('id')->on('%SMODULE%_menus')
+                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('authority_id')->references('id')->on('%SMODULE%_authorities')
+                ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->primary(['menu_id', 'authority_id']);
+        });
+
+        Schema::create('%SMODULE%_roles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 20)->comment('角色名称');
+            $table->string('description', 255)->nullable()->default('')->comment('角色描述');
+            $table->timestamps();
+
+        });
+
+        Schema::create('%SMODULE%_role_menu', function (Blueprint $table) {
+            $table->unsignedInteger('menu_id');
+            $table->unsignedInteger('role_id');
+
+            $table->foreign('menu_id')->references('id')->on('%SMODULE%_menus')
+                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('%SMODULE%_roles')
+                ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->primary(['menu_id', 'role_id']);
+        });
+
+        Schema::create('%SMODULE%_role_authority', function (Blueprint $table) {
+            $table->unsignedInteger('authority_id');
+            $table->unsignedInteger('role_id');
+
+            $table->foreign('authority_id')->references('id')->on('%SMODULE%_authorities')
+                ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('%SMODULE%_roles')
+                ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->primary(['authority_id', 'role_id']);
+        });
+
+        Schema::create('%SMODULE%_users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('role_id')->nullable()->comment('所属角色');
+            $table->string('name', 20)->comment('姓名');
+            $table->string('email', 50)->unique()->comment('邮件');
+            $table->string('password', 100)->comment('密码');
+            $table->string('remark')->nullable()->comment('用户说明');
+            $table->tinyInteger('status')->default(0)->comment('状态');
+            $table->timestamps();
+
+            $table->foreign('role_id')->references('id')->on('%SMODULE%_roles')
+                ->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        Schema::create('%SMODULE%_logs', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('user_id')->nullable()->comment('所属用户');
+            $table->string('name')->comment("path info");
+            $table->string('method', 10)->comment('请求类型');
+            $table->mediumText('body')->comment('参数');
+            $table->timestamps();
+        });
+
+        DB::statement("ALTER TABLE `%SMODULE%_authorities` COMMENT '权限表'");
+        DB::statement("ALTER TABLE `%SMODULE%_menus` COMMENT '菜单表'");
+        DB::statement("ALTER TABLE `%SMODULE%_roles` COMMENT '角色表'");
+        DB::statement("ALTER TABLE `%SMODULE%_users` COMMENT '用户表'");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('%SMODULE%_users');
+        Schema::dropIfExists('%SMODULE%_role_authority');
+        Schema::dropIfExists('%SMODULE%_role_menu');
+        Schema::dropIfExists('%SMODULE%_roles');
+        Schema::dropIfExists('%SMODULE%_menu_authority');
+        Schema::dropIfExists('%SMODULE%_menus');
+        Schema::dropIfExists('%SMODULE%_authorities');
+        Schema::dropIfExists('%SMODULE%_logs');
+    }
+}

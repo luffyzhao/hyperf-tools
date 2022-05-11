@@ -26,18 +26,36 @@ class ModuleCommand extends Command
         if (empty($name)) {
             throw new \InvalidArgumentException('name 参数不能为空！');
         }
+
+        $this->executeFiles('Controller', $name);
+
+        $this->executeFiles('Mail', $name);
+
+        $this->executeFiles('Middleware', $name);
+
         $this->executeFiles('Model', $name);
 
         $this->executeFiles('Request', $name);
 
         $this->executeFiles('Search', $name);
 
-        $this->executeFiles('Middleware', $name);
+        $this->executeFiles('Services', $name);
 
-        $this->executeFiles('Controller', $name);
+        $this->executeFiles('Repositories', $name);
+
+        $this->executeMigration($name);
+
     }
 
 
+    private function executeMigration($name){
+        $file = __DIR__ . '/stubs/migrations/auth_module_table.stub';
+        $stub = $this->buildClass($file, $name);
+
+        $filename = BASE_PATH . '/migrations/' .date('Y_m_d_His') . 'crate_' .  Str::lower($name) . 'auth_module_table.php';
+
+        file_put_contents($filename, $stub);
+    }
     /**
      * @param $module
      * @param $name
@@ -52,7 +70,7 @@ class ModuleCommand extends Command
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
             $stub = $this->buildClass($file, $name);
-            $replacePath = BASE_PATH . '/app/' . $module. '/' . Str::studly($name);
+            $replacePath = BASE_PATH . '/app/' . $module . '/' . Str::studly($name);
 
             $path = $this->buildPath($file, $orPath, $replacePath);
 
