@@ -13,7 +13,7 @@ use App\Model\Model;
  * @property string $description 角色描述
  * @property \Carbon\Carbon $created_at 
  * @property \Carbon\Carbon $updated_at
- * @property Collection<ManageMenu> $menus
+ * @property Collection<Menu> $menus
  */
 class Role extends Model
 {

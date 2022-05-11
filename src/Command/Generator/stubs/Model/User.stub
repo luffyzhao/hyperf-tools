@@ -22,7 +22,7 @@ use App\Model\Model;
  * @property int $status 状态
  * @property \Carbon\Carbon $created_at 
  * @property \Carbon\Carbon $updated_at
- * @property ManageRole $role
+ * @property Role $role
  */
 class User extends Model implements AuthenticatableInterface ,JwtSubjectInterface
 {
