@@ -1,0 +1,52 @@
+<?php
+
+declare (strict_types=1);
+
+namespace App\Model\%MODULE%;
+
+/**
+ * @property int $id
+ * @property string $name 权限名称
+ * @property string $uri 权限name
+ * @property string $description 权限描述
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
+class Authority extends Model
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = '%SMODULE%_authorities';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'method', 'uri', 'description', 'created_at', 'updated_at'];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    /**
+     * @return \Hyperf\Database\Model\Relations\BelongsToMany
+     */
+    public function menus()
+    {
+        return $this->belongsToMany(Menu::class, '%SMODULE%_menu_authority', 'authority_id', 'menu_id');
+    }
+
+    /**
+     * @return \Hyperf\Database\Model\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, '%SMODULE%_role_authority', 'authority_id', 'role_id');
+    }
+
+}

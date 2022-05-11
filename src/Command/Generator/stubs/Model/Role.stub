@@ -1,0 +1,61 @@
+<?php
+
+declare (strict_types=1);
+namespace App\Model\%MODULE%;
+
+use Hyperf\Database\Model\Collection;
+use Hyperf\Database\Model\Relations\BelongsToMany;
+
+/**
+ * @property int $id 
+ * @property string $name 角色名称
+ * @property string $description 角色描述
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at
+ * @property Collection<ManageMenu> $menus
+ */
+class Role extends Model
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = '%SMODULE%_roles';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'description', 'created_at', 'updated_at'];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    /**
+     * @return BelongsToMany
+     */
+    public function menus(): BelongsToMany
+    {
+        return $this->belongsToMany(Menu::class, '%SMODULE%_role_menu', 'role_id', 'menu_id');
+    }
+
+    /**
+     * @author: luffyzhao@vip.126.com
+     * @datetime: 2019/3/28 16:41
+     */
+    public function authorities(): BelongsToMany
+    {
+        return $this->belongsToMany(Authority::class, '%SMODULE%_role_authority', 'role_id', 'authority_id');
+    }
+
+    /**
+     * @return \Hyperf\Database\Model\Relations\BelongsTo
+     */
+    public function users(){
+        return $this->belongsTo(User::class);
+    }
+}

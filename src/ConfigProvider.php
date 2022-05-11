@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace LHyperfTools;
 
+use LHyperfTools\Command\Generator\ModuleCommand;
+use LHyperfTools\Command\Generator\RepositoryCommand;
+use LHyperfTools\Command\Generator\SearchCommand;
+use LHyperfTools\Command\Generator\ServiceCommand;
+use LHyperfTools\Command\MakeRepositoryCommand;
 use LHyperfTools\Listener\ValidatorFactoryResolvedListener;
 
 class ConfigProvider
@@ -11,10 +16,11 @@ class ConfigProvider
     {
         return [
             "commands" => [
-                \LHyperfTools\Command\Generator\RepositoryCommand::class,
-                \LHyperfTools\Command\Generator\ServiceCommand::class,
-                \LHyperfTools\Command\Generator\SearchCommand::class,
-                \LHyperfTools\Command\MakeRepositoryCommand::class
+                RepositoryCommand::class,
+                ServiceCommand::class,
+                SearchCommand::class,
+                MakeRepositoryCommand::class,
+                ModuleCommand::class
             ],
             'publish' => [
                 [

@@ -1,0 +1,60 @@
+<?php
+
+declare (strict_types=1);
+namespace App\Model\%MODULE%;
+
+/**
+ * @property int $id 
+ * @property int $parent_id 上级菜单
+ * @property string $name 菜单程度名称
+ * @property string $title 菜单标题
+ * @property string $icon 菜单图标
+ * @property int $sort 排序
+ * @property string $description 权限描述
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
+ */
+class Menu extends Model
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = '%SMODULE%_menus';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['parent_id', 'name', 'title', 'icon', 'sort', 'description', 'created_at', 'updated_at'];
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = ['id' => 'integer', 'parent_id' => 'integer', 'sort' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    /**
+     * @return \Hyperf\Database\Model\Relations\BelongsToMany
+     */
+    public function authorities(){
+        return $this->belongsToMany(Authority::class, '%SMODULE%_menu_authority', 'menu_id', 'authority_id');
+    }
+
+    /**
+     * @return \Hyperf\Database\Model\Relations\HasOne
+     */
+    public function parent()
+    {
+        return $this->hasOne(get_class($this), $this->getKeyName(), 'parent_id');
+    }
+
+    /**
+     * @return \Hyperf\Database\Model\Relations\HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(get_class($this), 'parent_id', $this->getKeyName());
+    }
+}
