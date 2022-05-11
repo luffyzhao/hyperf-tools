@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Middleware\%MODULE%;
+
+use App\Model\%MODULE%\Role;
+use App\Model\%MODULE%\User;
+use App\Services\%MODULE%\LogService;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Router\Dispatched;
+use Hyperf\Utils\Str;
+use LHyperfTools\Constants\HttpCode;
+use LHyperfTools\Traits\ApiResponseTrait;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class RBACAuthMiddleware implements MiddlewareInterface
+{
+    use ApiResponseTrait;
+    const prefix = '/%SMODULE%/api/';
+    const guard = '%SMODULE%_api';
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+    /**
+     * @var RequestInterface
+     */
+    private $request;
+
+    public function __construct(ContainerInterface $container, RequestInterface $request)
+    {
+        $this->container = $container;
+        $this->request = $request;
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+
+        /** @var User|null $user */
+        $user = auth(self::guard)->user();
+        if(is_null($user)){
+            return $this->setHttpCode(HttpCode::UNPROCESSABLE_ENTITY)->fail("请登录.");
+        }else if(!is_null($user->role)){
+            $route = $this->request->getAttribute(Dispatched::class)->handler->route;
+            $routeAuth = Str::substr($route, Str::length(self::prefix) - 1);
+
+
+            /** @var Role|null $role */
+            $role = $user->role->authorities()->where('name', $routeAuth)->where('method', strtoupper($this->request->getMethod()))->first();
+            if(is_null($role)){
+                return $this->setHttpCode(HttpCode::UNPROCESSABLE_ENTITY)->fail("没权限.");
+            }
+        }else if(!$user->isOpen()){
+            return $this->setHttpCode(HttpCode::UNPROCESSABLE_ENTITY)->fail("用户已关闭.");
+        }
+
+        $response = $handler->handle($request);
+
+        if(!$this->request->isMethod('get')){
+            make(LogService::class)->createForRequest($this->request);
+        }
+
+        return $response;
+    }
+
+
+}

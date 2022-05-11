@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\%MODULE%;
+
+use App\Repositories\%MODULE%\LoginRepository;
+use App\Request\%MODULE%\LoginRequest;
+use Gregwar\Captcha\CaptchaBuilder;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Contract\ResponseInterface;
+use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Str;
+use HyperfExt\Jwt\Contracts\JwtFactoryInterface;
+use LHyperfTools\Constants\HttpCode;
+use LHyperfTools\Libraries\Captcha;
+use LHyperfTools\Traits\ApiResponseTrait;
+use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\PostMapping;
+use Hyperf\HttpServer\Annotation\GetMapping;
+use Psr\SimpleCache\CacheInterface;
+use LHyperfTools\Middleware\RefreshTokenMiddleware;
+
+/**
+ * @Controller(prefix="%SMODULE%/api")
+ */
+class LoginController
+{
+    use  ApiResponseTrait;
+
+    /**
+     * @Inject
+     * @var CacheInterface
+     */
+    protected $cache;
+    /**
+     * @Inject
+     * @var LoginRepository
+     */
+    protected $loginRepository;
+
+    /**
+     * @PostMapping(path="login")
+     */
+    public function index(LoginRequest $request)
+    {
+        $request->validated();
+        if(!$token = $this->loginRepository->login($request)){
+            return $this->setHttpCode(HttpCode::UNPROCESSABLE_ENTITY)->fail('Unauthorized');
+        }
+        return $this->respondWithToken($token);
+
+    }
+
+    /**
+     * @GetMapping(path="captcha")
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function captcha(){
+        return make(Captcha::class)->json();
+    }
+
+    /**
+     * @param $token
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    protected function respondWithToken($token): \Psr\Http\Message\ResponseInterface
+    {
+        return $this->success([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expire_in' => make(JwtFactoryInterface::class)->make()->getPayloadFactory()->getTtl(),
+            'menus' => auth('manage_api')->user()->getMenus()
+        ]);
+    }
+}

@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Search\%MODULE%\Authority;
+
+use LHyperfTools\Search\SearchAbstract;
+use Hyperf\Di\Annotation\Inject;
+
+class RoleSearch extends SearchAbstract
+{
+    public function relationship(): array
+    {
+        return [];
+    }
+}

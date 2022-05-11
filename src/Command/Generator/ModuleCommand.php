@@ -6,7 +6,9 @@ use Hyperf\Command\Command;
 use Hyperf\Translation\FileLoader;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Hyperf\Utils\Str;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Finder\SplFileInfo;
+
 
 class ModuleCommand extends Command
 {
@@ -21,25 +23,65 @@ class ModuleCommand extends Command
     public function handle()
     {
         $name = $this->input->getArgument('name');
-        if(empty($name)){
+        if (empty($name)) {
             throw new \InvalidArgumentException('name 参数不能为空！');
         }
-        $this->executeModel($name);
+        $this->executeFiles('Model', $name);
+
+        $this->executeFiles('Request', $name);
+
+        $this->executeFiles('Search', $name);
+
+        $this->executeFiles('Middleware', $name);
+
+        $this->executeFiles('Controller', $name);
+    }
+
+
+    /**
+     * @param $module
+     * @param $name
+     * @return void
+     * @throws \Exception
+     */
+    private function executeFiles($module, $name)
+    {
+        $orPath = __DIR__ . '/stubs/' . Str::studly($module);
+
+        $files = $this->getFiles($orPath);
+        /** @var SplFileInfo $file */
+        foreach ($files as $file) {
+            $stub = $this->buildClass($file, $name);
+            $replacePath = BASE_PATH . '/app/' . $module. '/' . Str::studly($name);
+
+            $path = $this->buildPath($file, $orPath, $replacePath);
+
+            $this->makeDir($path);
+
+            file_put_contents($this->buildFilename($file, $path), $stub);
+        }
     }
 
     /**
-     * @throws \Exception
+     * @param SplFileInfo $file
+     * @param string $path
+     * @param string $replacePath
+     * @return string
      */
-    private function executeModel(string $name)
+    private function buildPath(SplFileInfo $file, string $path, string $replacePath)
     {
-        $files = $this->getFiles(__DIR__ . '/stubs/Model/');
-        /** @var SplFileInfo $file */
-        foreach ($files as $file){
-            $stub = $this->buildClass($file, $name);
-            $path = $file->getPath() . DIRECTORY_SEPARATOR . Str::camel($name). DIRECTORY_SEPARATOR;
-            $this->makeDir($path);
-            file_put_contents($path . $file->getFilename(), $stub);
-        }
+        $orPath = $file->getPath();
+        return Str::replace($path, $replacePath, $orPath);
+    }
+
+    /**
+     * @param SplFileInfo $file
+     * @param string $path
+     * @return string
+     */
+    private function buildFilename(SplFileInfo $file, string $path): string
+    {
+        return $path . '/' . $file->getBasename('.stub') . ".php";
     }
 
     /**
@@ -63,7 +105,7 @@ class ModuleCommand extends Command
     private function getFiles(string $path): array
     {
         $filesystem = new Filesystem();
-        return $filesystem->files($path);
+        return $filesystem->allFiles($path);
     }
 
     /**
@@ -73,7 +115,7 @@ class ModuleCommand extends Command
      */
     private function replaceClass(string $stub, string $name): string
     {
-        return str_replace('%MODULE%', Str::camel($name), $stub);
+        return str_replace('%MODULE%', Str::studly($name), $stub);
     }
 
     /**
@@ -94,13 +136,23 @@ class ModuleCommand extends Command
      */
     private function makeDir(string $path)
     {
-        if(!file_exists($path)){
+        if (!file_exists($path)) {
             mkdir($path, 0755, true);
         }
 
-        if(!is_writable($path)){
+        if (!is_writable($path)) {
             throw new \Exception(sprintf("%s 目录没有写入权限！", $path));
         }
         return true;
+    }
+
+    /**
+     * @return array[]
+     */
+    protected function getArguments()
+    {
+        return [
+            ['name', InputArgument::OPTIONAL, '这里是对这个参数的解释']
+        ];
     }
 }

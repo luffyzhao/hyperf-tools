@@ -1,0 +1,124 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\%MODULE%\Authority;
+
+
+use App\Repositories\%MODULE%\UsersRepository;
+use App\Request\%MODULE%\Authority\User\StoreRequest;
+use App\Request\%MODULE%\Authority\User\UpdateRequest;
+use App\Search\%MODULE%\Authority\UserSearch;
+use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\GetMapping;
+use Hyperf\HttpServer\Annotation\PostMapping;
+use Hyperf\HttpServer\Annotation\PutMapping;
+use LHyperfTools\Traits\ApiResponseTrait;
+
+use App\Middleware\%MODULE%\RBACAuthMiddleware;
+use LHyperfTools\Middleware\RefreshTokenMiddleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
+use Hyperf\HttpServer\Annotation\Middleware;
+
+/**
+ * @Controller(prefix="%SMODULE%/api/authorities/user")
+ *
+ * @Middlewares({
+ *      @Middleware(RefreshTokenMiddleware::class),
+ *      @Middleware(RBACAuthMiddleware::class)
+ *     })
+ */
+class UserController
+{
+    use ApiResponseTrait;
+
+    /**
+     * @GetMapping(path="")
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function index(UserSearch $search, UsersRepository $repository)
+    {
+        return $this->success(
+            $repository->index($search)
+        );
+    }
+
+    /**
+     * @GetMapping(path="create")
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function create(UsersRepository $repository)
+    {
+        return $this->success(
+            $repository->create()
+        );
+    }
+
+    /**
+     * @PostMapping(path="")
+     * @param UsersRepository $repository
+     * @param StoreRequest $request
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function store(UsersRepository $repository, StoreRequest $request){
+        $request->validated();
+        return $this->success(
+            $repository->store(
+                $request->inputs([
+                    'name', 'email', 'status', 'role_id', 'remark'
+                ])
+            )
+        );
+    }
+
+    /**
+     * @PutMapping(path="{id}/status")
+     * @param UsersRepository $repository
+     * @param $id
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Throwable
+     */
+    public function status(UsersRepository $repository, $id){
+        return $this->success(
+            $repository->status($id)
+        );
+    }
+
+    /**
+     * @GetMapping(path="{id}/edit")
+     * @param UsersRepository $repository
+     * @param $id
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function edit(UsersRepository $repository, $id){
+        return $this->success(
+            $repository->edit($id)
+        );
+    }
+    /**
+     * @PutMapping(path="{id}")
+     * @param UsersRepository $repository
+     * @param UpdateRequest $request
+     * @param $id
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function update(UsersRepository $repository, UpdateRequest $request, $id){
+        return $this->success(
+            $repository->update($id, $request->inputs([
+                'status', 'role_id', 'remark'
+            ]))
+        );
+    }
+
+    /**
+     * @PutMapping(path="{id}/password")
+     * @param UsersRepository $repository
+     * @param $id
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function password(UsersRepository $repository, $id){
+        return $this->success(
+            $repository->password($id)
+        );
+    }
+}

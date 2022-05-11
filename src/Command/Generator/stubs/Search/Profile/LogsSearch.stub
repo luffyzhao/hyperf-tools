@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Search\%MODULE%\Profile;
+
+use App\Middleware\%MODULE%\RBACAuthMiddleware;
+use LHyperfTools\Search\SearchAbstract;
+use Hyperf\Di\Annotation\Inject;
+
+class LogsSearch extends SearchAbstract
+{
+    public function relationship(): array
+    {
+        return [];
+    }
+
+    public function defaultArray(): array
+    {
+        return [
+            [
+                'user_id', '=', auth(RBACAuthMiddleware::guard)->user()->getAuthIdentifier()
+            ]
+        ];
+    }
+}

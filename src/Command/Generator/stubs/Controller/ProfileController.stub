@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Controller\%MODULE%;
+
+use App\Controller\AbstractController;
+use App\Middleware\%MODULE%\RBACAuthMiddleware;
+use App\Repositories\%MODULE%\ManageLogRepository;
+use App\Repositories\%MODULE%\UsersRepository;
+use App\Request\%MODULE%\ProfileRequest;
+use App\Search\%MODULE%\Profile\LogsSearch;
+use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\GetMapping;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\Middlewares;
+use Hyperf\HttpServer\Annotation\PutMapping;
+use LHyperfTools\Middleware\RefreshTokenMiddleware;
+use LHyperfTools\Traits\ApiResponseTrait;
+
+/**
+ * @Controller(prefix="%SMODULE%/api/profile")
+ * @Middlewares({
+ *      @Middleware(RefreshTokenMiddleware::class),
+ *      @Middleware(RBACAuthMiddleware::class)
+ *     })
+ */
+class ProfileController extends AbstractController
+{
+    use ApiResponseTrait;
+    /**
+     * @GetMapping(path="")
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function index(){
+        return $this->success(
+            auth(RBACAuthMiddleware::guard)->user()
+        );
+    }
+
+    /**
+     * @PutMapping(path="password")
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function password(ProfileRequest $request, UsersRepository $repository){
+        return $this->success(
+            $repository->password(auth(RBACAuthMiddleware::guard)->user()->getAuthIdentifier(), $request->input('password'))
+        );
+    }
+
+    /**
+     * @GetMapping(path="logs")
+     * @param ManageLogRepository $repository
+     * @param LogsSearch $search
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function logs(ManageLogRepository $repository, LogsSearch $search){
+        return $this->success(
+            $repository->paginate($search)
+        );
+    }
+}

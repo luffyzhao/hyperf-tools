@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\%MODULE%;
+
+
+use Hyperf\HttpServer\Annotation\AutoController;
+use Hyperf\View\RenderInterface;
+
+/**
+ * @AutoController(prefix="/")
+ */
+class IndexController
+{
+
+    public function index(RenderInterface $render)
+    {
+        return $render->render('%SMODULE%');
+    }
+
+
+}
