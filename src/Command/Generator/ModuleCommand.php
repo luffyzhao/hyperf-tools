@@ -49,10 +49,10 @@ class ModuleCommand extends Command
 
 
     private function executeMigration($name){
-        $file = __DIR__ . '/stubs/migrations/auth_module_table.stub';
+        $file = new SplFileInfo(__DIR__ . '/stubs/migrations/auth_module_table.stub', '/stubs/migrations', 'migrations');
         $stub = $this->buildClass($file, $name);
 
-        $filename = BASE_PATH . '/migrations/' .date('Y_m_d_His') . 'crate_' .  Str::lower($name) . 'auth_module_table.php';
+        $filename = BASE_PATH . '/migrations/' .date('Y_m_d_His') . '_create_' .  Str::lower($name) . '_auth_module_table.php';
 
         file_put_contents($filename, $stub);
     }
