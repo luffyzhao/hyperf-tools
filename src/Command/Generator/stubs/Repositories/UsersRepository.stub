@@ -1,0 +1,118 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories\%MODULE%;
+
+use App\Model\%MODULE%\User;
+use App\Search\%MODULE%\Authority\UserSearch;
+use App\Services\%MODULE%\RolesService;
+use App\Services\%MODULE%\UsersService;
+use Hyperf\Database\Model\Collection;
+use Hyperf\DbConnection\Db;
+use LHyperfTools\Repositories\RepositoryAbstract;
+
+class UsersRepository extends RepositoryAbstract
+{
+    /**
+     * @param UserSearch $search
+     * @return \Hyperf\Contract\LengthAwarePaginatorInterface
+     */
+    public function index(UserSearch $search)
+    {
+        $user = make(UsersService::class);
+        return $user->paginate($search->toArray(), ['role']);
+    }
+
+    /**
+     * @return array|Collection
+     */
+    public function create()
+    {
+        /** @var RolesService $role */
+        $role = make(RolesService::class);
+        return $role->get(['id', 'name']);
+    }
+
+    /**
+     * @param array $attributes
+     * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model
+     */
+    public function store(array $attributes)
+    {
+        return Db::transaction(function () use($attributes){
+            $user = make(UsersService::class);
+            return $user->create($attributes);
+        });
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function edit($id)
+    {
+        $user = make(UsersService::class);
+
+        return [
+            'roles' => $this->create(),
+            'row' =>  $user->find($id)
+        ];
+    }
+
+    /**
+     * @param $id
+     * @return User
+     * @throws \Throwable
+     */
+    public function status($id)
+    {
+        try {
+            Db::beginTransaction();
+            $user = make(UsersService::class);
+            /** @var User $model */
+            $model = $user->lock($id);
+            if($model->isOpen()){
+                $model->setAttribute('status' , 0);
+            }else{
+                $model->setAttribute('status' , 1);
+            }
+            $model->saveOrFail();
+
+            Db::commit();
+            return $model;
+        }catch (\Exception | \Throwable $exception){
+            Db::rollBack();
+            throw $exception;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $values
+     * @return mixed
+     */
+    public function update($id, array $values)
+    {
+        return Db::transaction(function () use($id, $values){
+            $user = make(UsersService::class);
+            return $user->update($id, $values);
+        });
+    }
+
+    /**
+     * @param $id
+     * @param null $password
+     * @return User
+     */
+    public function password($id, $password = null)
+    {
+        return Db::transaction(function () use($id, $password){
+            /** @var UsersService $user */
+            $user = make(UsersService::class);
+            return $user->password($id, $password);
+        });
+    }
+
+
+}

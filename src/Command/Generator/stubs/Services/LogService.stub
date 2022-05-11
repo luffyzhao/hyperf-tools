@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\%MODULE%;
+
+use App\Middleware\%MODULE%\RBACAuthMiddleware;
+use App\Model\%MODULE%\Log;
+use Hyperf\Database\Model\Builder;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use LHyperfTools\Services\ServiceAbstract;
+use function auth;
+
+class LogService extends ServiceAbstract
+{
+    private Log $log;
+
+    /**
+     * @param Log $log
+     */
+    public function __construct(Log $log)
+    {
+        $this->log = $log;
+    }
+
+    public function createForRequest(RequestInterface $request)
+    {
+        return $this->create([
+            'user_id' => auth(RBACAuthMiddleware::guard)->user()->getAuthIdentifier(),
+            'name' => $request->getRequestUri(),
+            'method' => $request->getMethod(),
+            'body' => json_encode($request->all()),
+        ]);
+    }
+
+    protected function getNewQuery(): Builder
+    {
+        return $this->log->newQuery();
+    }
+}

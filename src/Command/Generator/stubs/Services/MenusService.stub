@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\%MODULE%;
+
+use App\Model\%MODULE%\Menu;
+use Hyperf\Database\Model\Builder;
+use Hyperf\Database\Model\Collection;
+use LHyperfTools\Services\ServiceAbstract;
+
+class MenusService extends ServiceAbstract
+{
+    /**
+     * @var Menu
+     */
+    private $menu;
+
+    /**
+     * @param Menu $menu
+     */
+    public function __construct(Menu $menu)
+    {
+        $this->menu = $menu;
+    }
+
+    public function get(array $columns = ['*']): Collection|array
+    {
+        return $this->getNewQuery()->orderBy('sort')->get($columns);
+    }
+
+    /**
+     * @return Builder
+     */
+    protected function getNewQuery(): Builder
+    {
+        return $this->menu->newQuery();
+    }
+}

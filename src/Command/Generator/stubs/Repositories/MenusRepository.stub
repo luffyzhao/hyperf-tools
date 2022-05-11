@@ -1,0 +1,118 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories\%MODULE%;
+
+use App\Model\%MODULE%\Menu;
+use App\Services\%MODULE%\AuthoritiesService;
+use App\Services\%MODULE%\MenusService;
+use Hyperf\DbConnection\Db;
+use LHyperfTools\Repositories\RepositoryAbstract;
+
+class MenusRepository extends RepositoryAbstract
+{
+
+    /**
+     * @return array|\Hyperf\Database\Model\Collection
+     */
+    public function index()
+    {
+        $menu = make(MenusService::class);
+        return $menu->get();
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function edit($id)
+    {
+        $menu = make(MenusService::class);
+        /** @var Menu $model */
+        $model = $menu->find($id);
+        $model->loadMissing(['authorities:id', 'parent']);
+
+        $row = collect($model->toArray())->map(function ($item, $key) {
+            if ($key === 'authorities') {
+                return collect($item)->pluck('id');
+            }
+            return $item;
+        });
+
+        $authority = make(AuthoritiesService::class);
+        return [
+            'row' => $row,
+            'authorities' => $authority->getTransfer()
+        ];
+
+    }
+
+    /**
+     * @param $id
+     * @param array $attributes
+     * @return void
+     */
+    public function update($id, array $attributes)
+    {
+        return Db::transaction(function () use ($id, $attributes) {
+            $menu = make(MenusService::class);
+            /** @var Menu $model */
+            $model = $menu->find($id);
+
+            $model->fill($attributes)->saveOrFail();
+
+            $model->authorities()->sync($attributes['authorities'] ?? []);
+
+            return $model;
+        });
+    }
+
+    /**
+     * @param $ids
+     * @return void
+     */
+    public function delete($ids)
+    {
+        return Db::transaction(function () use ($ids) {
+            $menu = make(MenusService::class);
+            $idArr = explode('|', $ids);
+            foreach ($idArr as $id) {
+                /** @var Menu $model */
+                $model = $menu->find($id);
+                /** @var Menu $children */
+                if (!is_null($children = $model->children()->first())) {
+                    throw new \Exception(sprintf("菜单[%s]还有下级菜单，不能删除。", $children->getAttribute('title')));
+                }
+                $model->delete();
+            }
+            return true;
+        });
+    }
+
+    /**
+     * @return array|\Hyperf\Database\Model\Collection
+     */
+    public function create()
+    {
+        $authority = make(AuthoritiesService::class);
+        return $authority->getTransfer();
+    }
+
+    /**
+     * @param array $attributes
+     * @return void
+     */
+    public function store(array $attributes)
+    {
+        return Db::transaction(function () use ($attributes) {
+            $menu = make(MenusService::class);
+            /** @var Menu $model */
+            $model = $menu->create($attributes);
+
+            $model->authorities()->attach($attributes['authorities'] ?? []);
+
+            return $model;
+        });
+    }
+}

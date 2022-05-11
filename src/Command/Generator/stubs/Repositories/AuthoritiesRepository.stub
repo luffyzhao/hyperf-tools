@@ -1,0 +1,122 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories\%MODULE%;
+
+use App\Model\%MODULE%\Authority;
+use App\Model\Model;
+use App\Search\%MODULE%\Authority\AuthoritySearch;
+use App\Services\%MODULE%\AuthoritiesService;
+use App\Services\%MODULE%\MenusService;
+use Hyperf\DbConnection\Db;
+use LHyperfTools\Repositories\RepositoryAbstract;
+
+class AuthoritiesRepository extends RepositoryAbstract
+{
+
+    /**
+     * @param AuthoritySearch $search
+     * @return \Hyperf\Contract\LengthAwarePaginatorInterface
+     */
+    public function index(AuthoritySearch $search)
+    {
+        $authorities = make(AuthoritiesService::class);
+        return $authorities->paginate($search->toArray());
+    }
+
+    /**
+     * @return array|\Hyperf\Database\Model\Collection
+     */
+    public function create()
+    {
+        $menu = make(MenusService::class);
+        return $menu->get();
+    }
+
+    /**
+     * @param array $attributes
+     * @return Authority
+     */
+    public function store(array $attributes)
+    {
+        return Db::transaction(function () use ($attributes) {
+            $authorities = make(AuthoritiesService::class);
+            /** @var Authority $model */
+            $model = $authorities->create($attributes);
+
+            if (isset($attributes['menus'])) {
+                $model->menus()->attach($attributes['menus']);
+            }
+
+            return $model;
+        });
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function edit($id)
+    {
+        $authorities = make(AuthoritiesService::class);
+        /** @var Model $model */
+        $model = $authorities->find($id);
+        $model->loadMissing(['menus']);
+
+        $row = collect($model->toArray())->map(function ($item, $key) {
+            if ($key === 'menus') {
+                return collect($item)->pluck('id');
+            }
+            return $item;
+        });
+
+        $menu = make(MenusService::class);
+
+        return [
+            'row' => $row,
+            'menus' => $menu->get()
+        ];
+    }
+
+    /**
+     * @param $id
+     * @param array $attributes
+     * @return void
+     */
+    public function update($id, array $attributes)
+    {
+        return Db::transaction(function () use ($id, $attributes) {
+            $authorities = make(AuthoritiesService::class);
+            /** @var Authority $model */
+            $model =  $authorities->find($id);
+            $model->fill($attributes)->saveOrFail();
+
+            if (isset($attributes['menus'])) {
+                $model->menus()->sync($attributes['menus']);
+            }
+
+            return $model;
+        });
+    }
+
+
+    /**
+     * @param $id
+     * @return void
+     */
+    public function delete($id)
+    {
+        return Db::transaction(function () use ($id) {
+            $authorities = make(AuthoritiesService::class);
+            /** @var Authority $model */
+            $model = $authorities->find($id);
+            $model->menus()->detach();
+            $model->roles()->detach();
+            $model->delete();
+            return $model;
+        });
+    }
+
+
+}

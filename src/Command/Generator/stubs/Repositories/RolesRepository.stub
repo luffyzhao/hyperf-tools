@@ -1,0 +1,135 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories\%MODULE%;
+
+use App\Model\%MODULE%\Role;
+use App\Search\%MODULE%\Authority\RoleSearch;
+use App\Services\%MODULE%\MenusService;
+use App\Services\%MODULE%\RolesService;
+use Hyperf\DbConnection\Db;
+use LHyperfTools\Repositories\RepositoryAbstract;
+
+class RolesRepository extends RepositoryAbstract
+{
+
+    /**
+     * @param RoleSearch $search
+     * @return \Hyperf\Contract\LengthAwarePaginatorInterface
+     */
+    public function index(RoleSearch $search)
+    {
+       $role =  make(RolesService::class);
+       return $role->paginate($search->toArray());
+    }
+
+    /**
+     * @return array|\Hyperf\Database\Model\Collection
+     */
+    public function create()
+    {
+        $menu = make(MenusService::class);
+        $model = $menu->get(['id', 'title', 'parent_id']);
+        $model->loadMissing(['authorities']);
+        return $model;
+    }
+
+    /**
+     * @param array $attributes
+     * @return Role
+     */
+    public function store(array $attributes)
+    {
+        try{
+            Db::beginTransaction();
+            $role =  make(RolesService::class);
+            /** @var Role $model */
+            $model = $role->create($attributes);
+            if (isset($attributes['authorities'])) {
+                $model->authorities()->attach($attributes['authorities']);
+            }
+            if (isset($attributes['menus'])) {
+                $model->menus()->attach($attributes['menus']);
+            }
+            Db::commit();
+            return $model;
+        }catch (\Exception | \Throwable $exception){
+            Db::rollBack();
+        }
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function edit($id)
+    {
+        $menu = make(MenusService::class);
+        $model = $menu->get(['id', 'title', 'parent_id']);
+        $model->loadMissing(['authorities']);
+
+        return [
+            'menus' => $model,
+            'row' => make(RolesService::class)->edit($id)
+        ];
+    }
+
+    /**
+     * @param $id
+     * @param array $attributes
+     * @return Role
+     * @throws \Throwable
+     */
+    public function update($id, array $attributes)
+    {
+        try{
+            Db::beginTransaction();
+            $role =  make(RolesService::class);
+            /** @var Role $model */
+            $model = $role->find($id);
+            $model->fill($attributes)->saveOrFail();
+
+            if (isset($attributes['authorities'])) {
+                $model->authorities()->sync($attributes['authorities']);
+            }
+            if (isset($attributes['menus'])) {
+                $model->menus()->sync($attributes['menus']);
+            }
+
+            Db::commit();
+            return $model;
+        }catch (\Exception | \Throwable $exception){
+            Db::rollBack();
+            throw $exception;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return void
+     * @throws \Throwable
+     */
+    public function delete($id)
+    {
+        try{
+            Db::beginTransaction();
+            $role =  make(RolesService::class);
+            /** @var Role $model */
+            $model = $role->find($id);
+
+            if($model->users()->count() > 0){
+                throw new \Exception('部门还有用户，不能删除！');
+            }
+
+            $model->menus()->detach();
+            $model->authorities()->detach();
+            $model->delete();
+
+            Db::commit();
+        }catch (\Exception | \Throwable $exception){
+            Db::rollBack();
+            throw $exception;
+        }
+    }
+}

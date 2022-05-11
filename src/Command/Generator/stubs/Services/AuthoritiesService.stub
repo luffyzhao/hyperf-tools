@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\%MODULE%;
+
+use App\Model\%MODULE%\Authority;
+use Hyperf\Database\Model\Builder;
+use LHyperfTools\Services\ServiceAbstract;
+
+class AuthoritiesService extends ServiceAbstract
+{
+    /**
+     * @var Authority
+     */
+    private $authority;
+
+    /**
+     * @param Authority $authority
+     */
+    public function __construct(Authority $authority)
+    {
+        $this->authority = $authority;
+    }
+
+    /**
+     * @return Builder
+     */
+    protected function getNewQuery(): Builder
+    {
+        return $this->authority->newQuery();
+    }
+
+    /**
+     * @return Builder[]|\Hyperf\Database\Model\Collection
+     */
+    public function getTransfer(){
+        return $this->getNewQuery()->get(['id as key', 'name as label']);
+    }
+}

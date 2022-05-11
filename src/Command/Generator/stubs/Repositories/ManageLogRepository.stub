@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories\%MODULE%;
+
+use App\Services\%MODULE%\LogService;
+use LHyperfTools\Repositories\RepositoryAbstract;
+
+class ManageLogRepository extends RepositoryAbstract
+{
+    /**
+     * @param \App\Search\%MODULE%\Profile\LogsSearch $search
+     * @return \Hyperf\Contract\LengthAwarePaginatorInterface
+     */
+    public function paginate(\App\Search\%MODULE%\Profile\LogsSearch $search)
+    {
+        $log = make(LogService::class);
+        return $log->paginate($search->toArray(), [], null, ['id', 'method', 'name', 'created_at']);
+    }
+}

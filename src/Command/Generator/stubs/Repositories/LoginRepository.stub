@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories\%MODULE%;
+
+use App\Middleware\%MODULE%\RBACAuthMiddleware;
+use App\Model\%MODULE%\User;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use LHyperfTools\Repositories\RepositoryAbstract;
+
+class LoginRepository extends RepositoryAbstract
+{
+
+    public function login(RequestInterface $request)
+    {
+        $credentials = $request->inputs(['email', 'password']);
+        $token = auth(RBACAuthMiddleware::guard)->attempt($credentials);
+        /** @var User $user */
+        $user = auth(RBACAuthMiddleware::guard)->user();
+        if(!$user->isOpen()){
+            throw new \Exception('用户已关闭.');
+        }
+        return $token;
+    }
+}
