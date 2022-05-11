@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Request\%MODULE%\Authority\Authority;
+
+use Hyperf\Validation\Request\FormRequest;
+use Hyperf\Validation\Rule;
+
+class StoreRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     */
+    public function rules(): array
+    {
+        return [
+            'name' => ['required', 'max:20'],
+            'method' => ['required', 'max:20', 'in:GET,POST,DELETE,PUT'],
+            'uri' => ['required', Rule::unique('%SMODULE%_authorities', 'uri')->where('method', $this->input('method'))],
+            'description' => ['nullable', 'max:200'],
+            'menus' => ['nullable', 'array'],
+        ];
+    }
+}

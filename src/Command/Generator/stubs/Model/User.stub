@@ -9,6 +9,7 @@ use HyperfExt\Auth\Authenticatable;
 use HyperfExt\Auth\Contracts\AuthenticatableInterface;
 use HyperfExt\Hashing\Hash;
 use HyperfExt\Jwt\Contracts\JwtSubjectInterface;
+use App\Model\Model;
 
 /**
  * @property int $id 

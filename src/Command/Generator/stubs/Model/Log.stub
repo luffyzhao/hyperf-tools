@@ -3,6 +3,7 @@
 declare (strict_types=1);
 namespace App\Model\%MODULE%;
 
+use App\Model\Model;
 /**
  * @property int $id 
  * @property int $user_id 所属用户

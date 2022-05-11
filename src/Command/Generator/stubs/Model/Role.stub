@@ -5,6 +5,7 @@ namespace App\Model\%MODULE%;
 
 use Hyperf\Database\Model\Collection;
 use Hyperf\Database\Model\Relations\BelongsToMany;
+use App\Model\Model;
 
 /**
  * @property int $id 

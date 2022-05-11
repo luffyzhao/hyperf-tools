@@ -4,6 +4,8 @@ declare (strict_types=1);
 
 namespace App\Model\%MODULE%;
 
+use App\Model\Model;
+
 /**
  * @property int $id
  * @property string $name 权限名称

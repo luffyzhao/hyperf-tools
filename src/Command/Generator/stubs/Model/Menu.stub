@@ -3,6 +3,7 @@
 declare (strict_types=1);
 namespace App\Model\%MODULE%;
 
+use App\Model\Model;
 /**
  * @property int $id 
  * @property int $parent_id 上级菜单
