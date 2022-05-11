@@ -3,6 +3,7 @@
 declare (strict_types=1);
 namespace App\Model\%MODULE%;
 
+use App\Services\%MODULE%\MenusService;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\ModelCache\Cacheable;
 use HyperfExt\Auth\Authenticatable;
@@ -95,7 +96,7 @@ class User extends Model implements AuthenticatableInterface ,JwtSubjectInterfac
      */
     public function getMenus(){
         if($this->getAttribute('role_id') === null){
-            return Menu::all();
+            return make(MenusService::class)->get();
         }else{
             return $this->role->menus;
         }
