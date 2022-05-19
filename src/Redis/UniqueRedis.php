@@ -18,11 +18,11 @@ class UniqueRedis extends Redis
         if ($toBase > 36 || $toBase < 2){
             throw new Exception("进制不能大于36并且不能小于2");
         }
-        $incr = base_convert($this->incr($key), 10, $toBase);
+        $incr = base_convert($this->incr(strtoupper(get_class()) . ":" . $key . $key), 10, $toBase);
         $strLen = mb_strlen($key) + mb_strlen($incr);
         if ($strLen > $length) {
             throw new Exception("长度不够生成唯一主健");
         }
-        return strtoupper(get_class()) . ":" . $key . str_pad(strtoupper($incr), $length - mb_strlen($key), '0', STR_PAD_LEFT);
+        return  str_pad(strtoupper($incr), $length - mb_strlen($key), '0', STR_PAD_LEFT);
     }
 }
