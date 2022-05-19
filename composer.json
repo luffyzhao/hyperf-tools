@@ -26,6 +26,7 @@
         "hyperf/db-connection": "^2.2",
         "hyperf/devtool": "^2.2",
         "hyperf/http-server": ">=2",
+        "hyperf/redis": "^2.2",
         "hyperf/validation": "^2.2",
         "ramsey/uuid": "^4.3"
     },
