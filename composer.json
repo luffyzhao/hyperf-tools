@@ -28,6 +28,7 @@
         "hyperf/http-server": ">=2",
         "hyperf/redis": "^2.2",
         "hyperf/validation": "^2.2",
+        "phpoffice/phpspreadsheet": "^1.23",
         "ramsey/uuid": "^4.3"
     },
     "config": {
