@@ -18,4 +18,5 @@ interface SheetImport
 
     public function getMap():array;
 
+    public function getCasts():array;
 }
