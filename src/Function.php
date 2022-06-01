@@ -19,3 +19,7 @@ if (! function_exists('auth')) {
         return make(AuthManagerInterface::class)->guard($guard);
     }
 }
+
+if(defined('BASE_PATH')){
+    define('BASE_PATH', __DIR__ . '/../../../../');
+}

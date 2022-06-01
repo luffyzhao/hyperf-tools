@@ -3,6 +3,7 @@
 namespace LHyperfTools\Command\Generator;
 
 use Hyperf\Command\Command;
+use Hyperf\DbConnection\Db;
 use Hyperf\Translation\FileLoader;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Hyperf\Utils\Str;
@@ -45,6 +46,10 @@ class ModuleCommand extends Command
 
         $this->executeMigration($name);
 
+        $this->call("migrate");
+
+        $this->seeds($name);
+
     }
 
 
@@ -78,6 +83,22 @@ class ModuleCommand extends Command
 
             file_put_contents($this->buildFilename($file, $path), $stub);
         }
+    }
+
+    /**
+     * @param string $name
+     * @return void
+     */
+    private function seeds(string $name){
+        $orPath = __DIR__ . '/stubs/seeds/';
+        $files =  $this->getFiles($orPath);
+        Db::transaction(function () use ($files, $name){
+            foreach ($files as $file){
+                $string = $file->getContents();
+                $string = $this->replaceDatabases($string, $name);
+                Db::insert($string);
+            }
+        });
     }
 
     /**
@@ -118,7 +139,7 @@ class ModuleCommand extends Command
 
     /**
      * @param string $path
-     * @return array
+     * @return SplFileInfo[]
      */
     private function getFiles(string $path): array
     {
@@ -141,10 +162,11 @@ class ModuleCommand extends Command
      * @param string $name
      * @return string
      */
-    private function replaceDatabases(string $stub, string $name)
+    private function replaceDatabases(string $stub, string $name): string
     {
-        return str_replace('%SMODULE%', Str::lower($name), $stub);
+        return str_replace('%MODULE%', mb_strtolower($name), $stub);
     }
+
 
 
     /**

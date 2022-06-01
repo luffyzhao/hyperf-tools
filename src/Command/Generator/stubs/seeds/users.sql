@@ -1,0 +1,2 @@
+INSERT INTO `%SMODULE%_users` VALUES (1, NULL, '测试', 'cang@av.com', '$2y$10$Hd3UxejSyIGt/7lI7gAr6umkk2silYylfZ6TUomF1h2CaZ.Ve1mt6', '23imidfjoi35j309jdf934', 1, '2022-04-28 16:08:29', '2022-05-11 08:50:43');
+INSERT INTO `%SMODULE%_users` VALUES (10, 2, '测试2', 'luffyzhao@bestlucklog.com', '$2y$10$oiZPahFowZRTUuakTecKFOyBQ.hwXQ1p6wy.WABofxvorxWdpRqGy', '1', 1, '2022-05-09 04:09:13', '2022-05-09 05:02:03');
