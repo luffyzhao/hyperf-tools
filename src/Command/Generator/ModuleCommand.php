@@ -28,25 +28,25 @@ class ModuleCommand extends Command
             throw new \InvalidArgumentException('name 参数不能为空！');
         }
 
-//        $this->executeFiles('Controller', $name);
-//
-//        $this->executeFiles('Mail', $name);
-//
-//        $this->executeFiles('Middleware', $name);
-//
-//        $this->executeFiles('Model', $name);
-//
-//        $this->executeFiles('Request', $name);
-//
-//        $this->executeFiles('Search', $name);
-//
-//        $this->executeFiles('Services', $name);
-//
-//        $this->executeFiles('Repositories', $name);
-//
-//        $this->executeMigration($name);
-//
-//        $this->call("migrate");
+        $this->executeFiles('Controller', $name);
+
+        $this->executeFiles('Mail', $name);
+
+        $this->executeFiles('Middleware', $name);
+
+        $this->executeFiles('Model', $name);
+
+        $this->executeFiles('Request', $name);
+
+        $this->executeFiles('Search', $name);
+
+        $this->executeFiles('Services', $name);
+
+        $this->executeFiles('Repositories', $name);
+
+        $this->executeMigration($name);
+
+        $this->call("migrate");
 
         $this->seeds($name);
 
