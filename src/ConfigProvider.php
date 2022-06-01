@@ -26,19 +26,19 @@ class ConfigProvider
                 [
                     'id' => 'config',
                     'description' => 'The config for jwt.',
-                    'source' => __DIR__ . '/../vendor/hyperf-ext/auth/publish/auth.php',
+                    'source' => __DIR__ . '/../../hyperf-ext/auth/publish/auth.php',
                     'destination' => BASE_PATH . '/config/autoload/auth.php',
                 ],
                 [
                     'id' => 'config',
                     'description' => 'The config for auth.',
-                    'source' => __DIR__ . '/../vendor/hyperf-ext/jwt/publish/jwt.php',
+                    'source' => __DIR__ . '/../../hyperf-ext/jwt/publish/jwt.php',
                     'destination' => BASE_PATH . '/config/autoload/jwt.php',
                 ],
                 [
                     'id' => 'config',
                     'description' => 'The config for hashing.',
-                    'source' => __DIR__ . '/../vendor/hyperf-ext/hashing/publish/hashing.php',
+                    'source' => __DIR__ . '/../../hyperf-ext/hashing/publish/hashing.php',
                     'destination' => BASE_PATH . '/config/autoload/hashing.php',
                 ], [
                     'id' => 'config',

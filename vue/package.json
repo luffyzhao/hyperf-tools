@@ -1,0 +1,41 @@
+{
+  "name": "erp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build  --no-clean --mode production",
+    "watch": "vue-cli-service build --watch --no-clean --mode development"
+  },
+  "dependencies": {
+    "@theshy/vue-print": "^0.0.3",
+    "axios": "^0.21.1",
+    "core-js": "^3.6.5",
+    "decimal.js": "^10.3.1",
+    "resize-observer-polyfill": "^1.5.1",
+    "storage-web": "^4.0.0-alpha.5",
+    "view-design": "^4.4.0",
+    "vue": "^2.6.11",
+    "vue-clipboard2": "^0.3.3",
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0",
+    "web-storage-cache": "^1.1.1",
+    "webstorage": "0.0.7",
+    "xlsx": "^0.18.4"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-cli": "^3.1.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

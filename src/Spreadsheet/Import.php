@@ -76,7 +76,7 @@ class Import
         if($newValue == $value){
             return $newValue;
         }
-        throw new \Exception($casts[$key] . '数据转换后出现了差异！');
+        throw new \Exception('数据转换后出现了差异！');
     }
 
     /**
@@ -89,7 +89,7 @@ class Import
         if($newValue == $value){
             return $newValue;
         }
-        throw new \Exception($casts[$key] . '数据转换后出现了差异！');
+        throw new \Exception('数据转换后出现了差异！');
     }
 
     /**
@@ -102,6 +102,6 @@ class Import
         if($newValue == $value){
             return $newValue;
         }
-        throw new \Exception($casts[$key] . '数据转换后出现了差异！');
+        throw new \Exception('数据转换后出现了差异！');
     }
 }
