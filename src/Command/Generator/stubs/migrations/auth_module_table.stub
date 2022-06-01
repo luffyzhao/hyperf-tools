@@ -16,7 +16,7 @@ class Create%MODULE%AuthModuleTable extends Migration
             $table->increments('id');
             $table->string('name', 20)->comment('权限名称');
             $table->string('method', 20)->comment('请求类型');
-            $table->string('uri', 100)->unique()->comment('权限URI');
+            $table->string('uri', 100)->comment('权限URI');
             $table->string('description', 255)->nullable()->comment('权限描述');
             $table->timestamps();
 

@@ -28,25 +28,25 @@ class ModuleCommand extends Command
             throw new \InvalidArgumentException('name 参数不能为空！');
         }
 
-        $this->executeFiles('Controller', $name);
-
-        $this->executeFiles('Mail', $name);
-
-        $this->executeFiles('Middleware', $name);
-
-        $this->executeFiles('Model', $name);
-
-        $this->executeFiles('Request', $name);
-
-        $this->executeFiles('Search', $name);
-
-        $this->executeFiles('Services', $name);
-
-        $this->executeFiles('Repositories', $name);
-
-        $this->executeMigration($name);
-
-        $this->call("migrate");
+//        $this->executeFiles('Controller', $name);
+//
+//        $this->executeFiles('Mail', $name);
+//
+//        $this->executeFiles('Middleware', $name);
+//
+//        $this->executeFiles('Model', $name);
+//
+//        $this->executeFiles('Request', $name);
+//
+//        $this->executeFiles('Search', $name);
+//
+//        $this->executeFiles('Services', $name);
+//
+//        $this->executeFiles('Repositories', $name);
+//
+//        $this->executeMigration($name);
+//
+//        $this->call("migrate");
 
         $this->seeds($name);
 
@@ -93,10 +93,23 @@ class ModuleCommand extends Command
         $orPath = __DIR__ . '/stubs/seeds/';
         $files =  $this->getFiles($orPath);
         Db::transaction(function () use ($files, $name){
-            foreach ($files as $file){
-                $string = $file->getContents();
-                $string = $this->replaceDatabases($string, $name);
-                Db::insert($string);
+            try{
+                Db::unprepared("SET FOREIGN_KEY_CHECKS = 0;");
+                foreach ($files as $file){
+                    $string = $file->getContents();
+                    $string = $this->replaceDatabases($string, $name);
+                    $array = explode(PHP_EOL, $string);
+                    foreach ($array as $str){
+                        if(empty(trim($str))){
+                            continue;
+                        }
+                        Db::unprepared($str);
+                    }
+                }
+            }catch (\Exception | \Throwable $exception){
+                throw $exception;
+            } finally {
+                Db::unprepared("SET FOREIGN_KEY_CHECKS = 1;");
             }
         });
     }
@@ -164,7 +177,7 @@ class ModuleCommand extends Command
      */
     private function replaceDatabases(string $stub, string $name): string
     {
-        return str_replace('%MODULE%', mb_strtolower($name), $stub);
+        return str_replace('%SMODULE%', Str::lower($name), $stub);
     }
 
 

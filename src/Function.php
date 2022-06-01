@@ -20,6 +20,6 @@ if (! function_exists('auth')) {
     }
 }
 
-if(defined('BASE_PATH')){
+if(!defined('BASE_PATH')){
     define('BASE_PATH', __DIR__ . '/../../../../');
 }
