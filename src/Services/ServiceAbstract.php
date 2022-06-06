@@ -94,12 +94,14 @@ abstract class ServiceAbstract
      * 更新
      * @param $id
      * @param array $values
-     * @return bool
+     * @return array|Builder|Collection|Model
      * @throws Throwable
      */
-    public function update($id, array $values): bool
+    public function update($id, array $values): array|Builder|Collection|Model
     {
-        return $this->find($id)->fill($values)->saveOrFail();
+        $model = $this->find($id);
+        $model->fill($values)->saveOrFail();
+        return $model;
     }
 
     /**
